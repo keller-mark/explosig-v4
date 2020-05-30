@@ -1,0 +1,73 @@
+toc:
+- name: Introduction
+  file: docs/Introduction.md
+- name: React Components
+- CistromeHGW
+- name: React Components (internal)
+- CistromeHGWConsumer
+- InfoProvider
+- DataTable
+- DataTableForIntervalTFs
+- ContextMenu
+- Tooltip
+- TooltipContent
+- TrackRowHighlight
+- TrackRowInfo
+- TrackRowInfoControl
+- TrackRowInfoVis
+- TrackRowInfoVisDendrogram
+- TrackRowInfoVisLink
+- TrackRowInfoVisNominalBar
+- TrackRowInfoVisQuantitativeBar
+- TrackRowSearch
+- TrackRowZoomOverlay
+- RangeSlider
+- TrackWrapper
+- ViewWrapper
+- ViewColumnBrush
+- SuggestionWithHighlight
+- name: Functions (internal)
+- getHighlightKeyByFieldType
+- addTrackWrapperOptions
+- validateWrapperOptions
+- processWrapperOptions
+- updateWrapperOptions
+- getWrapperSubOptions
+- getTrackWrapperOptions
+- getRetinaRatio
+- traverseViewConfig
+- addTrackDefToViewConfig
+- getTrackDefFromViewConfig
+- getHMTrackIdsFromViewConfig
+- getSiblingVPHTrackIdsFromViewConfig
+- updateViewConfigOnSelectGenomicInterval
+- removeViewportFromViewConfig
+- updateViewConfigOnSelectRowsByTrack
+- getHMSelectedRowsFromViewConfig
+- getUniqueViewOrTrackId
+- getAllViewAndTrackPairs
+- resolveIntervalCoordinates
+- selectRows
+- highlightRowsFromSearch
+- insertItemToArray
+- modifyItemInArray
+- removeItemFromArray
+- drawVisTitle
+- matrixToTree
+- matrixToTreeWithDistance
+- createReducer
+- validateIntervalParams
+- makeDBToolkitIntervalAPIURL
+- requestIntervalTFs
+- componentToHex
+- rgbToHex
+- generateNextUniqueColor
+- getRange
+- wrapSvg
+- name: Classes (internal)
+- Two
+- TwoRectangle
+- TwoCircle
+- TwoLine
+- TwoPath
+- TwoText

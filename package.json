@@ -1,0 +1,60 @@
+{
+  "name": "explosig",
+  "version": "0.0.0",
+  "author": "Mark Keller",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lrgr/explosig"
+  },
+  "homepage": "https://explosig.lrgr.io",
+  "dependencies": {
+    "colorjoe": "^4.1.0",
+    "d3": "^5.15.0",
+    "d3-delaunay": "^5.2.1",
+    "d3-dispatch-nosplit": "^2.0.1",
+    "d3-drag": "^1.2.5",
+    "lodash": "^4.17.15",
+    "pubsub-js": "^1.8.0",
+    "uuid": "^3.4.0",
+    "vega-scale": "^6.0.0",
+    "simple-statistics": "^6.1.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-vega": "^7.3.0",
+    "styled-components": "^5.1.0",
+    "vega": "^5.12.0",
+    "vega-lite": "^4.12.1",
+    "vega-lite-api": "^0.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.4",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-html": "^0.1.1",
+    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "babel-jest": "^25.1.0",
+    "documentation": "^12.1.4",
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0",
+    "rollup": "^1.29.1",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-livereload": "^1.0.4",
+    "rollup-plugin-scss": "^2.1.0",
+    "rollup-plugin-serve": "^1.0.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-visualizer": "^3.3.1",
+    "sass": "^1.25.0"
+  },
+  "scripts": {
+    "start": "rollup -c rollup.demo.config.js --environment NODE_ENV:development --watch",
+    "build": "rollup -c rollup.demo.config.js --environment NODE_ENV:production",
+    "test": "jest -c jest.config.js",
+    "docs": "documentation build src/** -f html -o build-docs --config .documentation.yml"
+  },
+  "main": "build-lib/index.umd.js",
+  "unpkg": "build-lib/index.min.js",
+  "module": "build-lib/index.esm.js"
+}
