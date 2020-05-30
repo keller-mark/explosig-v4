@@ -1,17 +1,24 @@
-import pkg from './package.json';
-import merge from 'lodash/merge';
+const pkg = require('./package.json');
+const { join } = require('path');
+const merge = require('lodash/merge');
 
-import resolve from '@rollup/plugin-node-resolve';
-import json from '@rollup/plugin-json';
-import commonjs from '@rollup/plugin-commonjs';
-import html from '@rollup/plugin-html';
-import babel from 'rollup-plugin-babel';
-import scss from 'rollup-plugin-scss';
-import visualizer from 'rollup-plugin-visualizer';
-import { terser } from 'rollup-plugin-terser';
-import { join } from 'path';
+const resolve = require('@rollup/plugin-node-resolve');
+const json = require('@rollup/plugin-json');
+const scss = require('rollup-plugin-scss');
+const svgr = require('@svgr/rollup').default;
+const commonjs = require('@rollup/plugin-commonjs');
+const { babel } = require('@rollup/plugin-babel');
+const replace = require('@rollup/plugin-replace');
+const html = require('@rollup/plugin-html');
+const visualizer = require('rollup-plugin-visualizer');
+const { terser } = require('rollup-plugin-terser');
 
-import { htmlFromTemplate } from './rollup.demo.utils.js';
+const { htmlFromTemplate } = require('./rollup.demo.utils');
+
+// Imports for namedExports
+const react = require('react');
+const reactIs = require('react-is');
+const reactDom = require('react-dom');
 
 // Constants for output files:
 const SRC_DIR = 'src';
@@ -45,15 +52,23 @@ const baseConfig = {
         scss({
             output: join(BUILD_DIR, OUTPUT_CSS),
         }),
+        svgr(),
         json(),
         commonjs({
-            include: [
-              'node_modules/**',
-            ]
+            include: /node_modules/,
+            namedExports: {
+                'node_modules/react/index.js': Object.keys(react),
+                'node_modules/react-is/index.js': Object.keys(reactIs),
+                'node_modules/react-dom/index.js': Object.keys(reactDom),
+            }
         }),
         babel({
-            runtimeHelpers: true,
             exclude: 'node_modules/**' // only transpile our source code
+        }),
+        replace({
+            // React uses process.env to determine whether a development or production environment.
+            // Reference: https://github.com/rollup/rollup/issues/487#issuecomment-177596512
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
         html({
             title: pkg.name,
@@ -63,14 +78,12 @@ const baseConfig = {
                 return htmlFromTemplate({
                     publicPath: (process.env.NODE_ENV === 'production' ? publicPath : './'),
                     title: title,
-                    nodeEnv: process.env.NODE_ENV,
                     cssFile: OUTPUT_CSS,
                     jsFile: OUTPUT_JS[process.env.NODE_ENV],
                 });
             }
         })
-    ],
-    external: Object.keys(pkg.peerDependencies)
+    ]
 };
 
 const devConfig = {

@@ -1,4 +1,4 @@
-export function htmlFromTemplate({ title, publicPath, nodeEnv, cssFile, jsFile }) {
+function htmlFromTemplate({ title, publicPath, cssFile, jsFile }) {
     return `<!DOCTYPE html>
 <html>
     <head lang="en">
@@ -9,12 +9,12 @@ export function htmlFromTemplate({ title, publicPath, nodeEnv, cssFile, jsFile }
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        
-        <div id="root"></div>
-        
-        ${peerScripts[nodeEnv]}
-        
+        <div id="root"></div>        
         <script type="text/javascript" src="${publicPath}${jsFile}"></script>
     </body>
 </html>`;
+};
+
+module.exports = {
+    htmlFromTemplate,
 };
