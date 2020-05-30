@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "10"
+  - "12"
 cache:
   yarn: true
   directories:
@@ -16,5 +16,4 @@ deploy:
     skip-cleanup: true
     github-token: $github_token
     local-dir: build-demo
-    fqdn: cisvis.gehlenborglab.org
 keep-history: true
