@@ -1,0 +1,1 @@
+export { default as solveQP } from "./quadprog.js";

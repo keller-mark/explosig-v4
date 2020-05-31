@@ -1,3 +1,4 @@
+import d3 from "../d3.js";
 
 export function parseTsv(tsvString) {
     const parsed = d3.tsvParseRows(tsvString);
@@ -9,6 +10,14 @@ export function parseTsv(tsvString) {
     const data = parsed.map(d => { d.shift(); return d.map(parseFloat); });
     data.shift();
     return { data, index, columns };
+}
+
+export function readTsv(promise) {
+    return promise
+        .then(res => res.text())
+        .then((tsvString) => {
+            return Promise.resolve(parseTsv(tsvString));
+        });
 }
 
 export function filterRows(df, newIndexValues) {
@@ -34,6 +43,7 @@ export function transpose(df) {
 
 export function normalizeRows(df) {
     const { data, index, columns } = df;
+    console.log(data);
     const rowSums = data.map(row => d3.sum(row));
     const newData = data.map((row, i) => row.map(d => d / rowSums[i]));
     return { index, columns, data: newData };

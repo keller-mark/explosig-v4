@@ -1,13 +1,12 @@
 import range from "lodash/range";
 
+const dotproduct = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
+const transpose = a => a[0].map((x, i) => a.map(y => y[i]));
+const mmultiply = (a, b) => a.map(x => transpose(b).map(y => dotproduct(x, y)));
+
 export function dot(A, B) {
-    const result = new Array(A.length).fill(0).map(row => new Array(B[0].length).fill(0));
-  
-    return result.map((row, i) => {
-      return row.map((val, j) => {
-        return A[i].reduce((sum, elm, k) => sum + (elm*B[k][j]) ,0)
-      })
-    });
+    console.log(A, B);
+    return mmultiply(A, B);
 }
 
 export function eye(k) {
