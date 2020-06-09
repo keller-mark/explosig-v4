@@ -1,4 +1,6 @@
 import d3 from "../d3.js";
+import range from "lodash/range";
+import * as mat from "./matrix.js";
 
 export function parseTsv(tsvString) {
     const parsed = d3.tsvParseRows(tsvString);
@@ -20,7 +22,14 @@ export function readTsv(promise) {
         });
 }
 
-export function filterRows(df, newIndexValues) {
+export function shape(df) {
+    if(Array.isArray(df)) {
+        return mat.shape(df);
+    }
+    return [df.index.length, df.columns.length];
+}
+
+export function selectRows(df, newIndexValues) {
     const { data, index, columns } = df;
     const newIndexIndices = newIndexValues.map(name => index.indexOf(name));
     const newIndex = newIndexIndices.map(i => index[i]);
@@ -36,19 +45,45 @@ export function selectColumns(df, newColumns) {
 }
 
 export function transpose(df) {
-    const { data, index, columns } = df;
-    const newData = columns.map((col, i) => index.map((row, j) => data[j][i]));
-    return { index: columns, columns: index, data: newData };
+    return (Array.isArray(df)
+        ? mat.transpose(df)
+        : ({
+            index: df.columns,
+            columns: df.index,
+            data: mat.transpose(df.data),
+        })
+    );
 }
 
 export function normalizeRows(df) {
-    const { data, index, columns } = df;
-    console.log(data);
-    const rowSums = data.map(row => d3.sum(row));
-    const newData = data.map((row, i) => row.map(d => d / rowSums[i]));
-    return { index, columns, data: newData };
+    return (Array.isArray(df)
+        ? mat.normalizeRows(df)
+        : ({
+            index: df.index,
+            columns: df.columns,
+            data: mat.normalizeRows(df.data),
+        })
+    );
 }
 
-export function shape(df) {
-    return [df.index.length, df.columns.length];
+export function dot(A, B) {
+    return ((Array.isArray(A) && Array.isArray(B))
+        ? mat.dot(A, B)
+        : ({
+            index: A.index,
+            columns: B.columns,
+            data: mat.dot(A.data, B.data)
+        })
+    );
+}
+
+export function clipLower(df, lower) {
+    return (Array.isArray(df)
+        ? mat.clipLower(df)
+        : ({
+            index: df.index,
+            columns: df.columns,
+            data: mat.clipLower(df.data, lower),
+        })
+    );
 }

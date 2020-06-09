@@ -1,7 +1,7 @@
 import range from "lodash/range";
 import { solveQP } from "../../quadprog/index.js";
-import { normalizeRows, transpose, shape, selectColumns } from '../df.js';
-import { dot, hstack, ones, eye } from '../matrix.js';
+import * as df from '../df.js';
+import * as mat from '../matrix.js';
 
 /**
  * Estimate exposures with quadratic programming.
@@ -16,54 +16,48 @@ import { dot, hstack, ones, eye } from '../matrix.js';
 export default function signatureEstimationQP(origM, origP) {
 
     // Reorder the columns of the mutations matrix to match the ordering of the signatures columns
-    const orderedM = selectColumns(origM, origP.columns);
+    const orderedM = df.selectColumns(origM, origP.columns);
 
     // Normalize M and transpose to match the SignatureEstimation package.
-    const M = transpose(normalizeRows(orderedM));
+    const M = df.transpose(df.normalizeRows(orderedM));
     
     // Normalize P and transpose.
-    const P = transpose(normalizeRows(origP));
-
-    console.log(P.data);
+    const P = df.transpose(df.normalizeRows(origP));
     
     // K = # of signatures.
-    const K = shape(P)[1];
+    const K = df.shape(P)[1];
     // N = # of samples.
-    const N = shape(M)[1];
+    const N = df.shape(M)[1];
     
     // G = matrix appearing in the quad prog objective function.
     // Shape (n, n)
-    const G = dot(transpose(P).data, P.data);
-    console.log("G length", G.length, G[0].length);
+    const G = df.dot(df.transpose(P), P).data;
     
     // C = matrix constraints under which we want to minimize the quad prog objective function.
     // Shape (n,m)
-    const C = hstack(ones(K, 1), eye(K));
-    console.log("C length", C.length, C[0].length);
+    const C = mat.hstack(mat.ones(K, 1), mat.eye(K));
     
     // b = vector containing the values of b_0.
     // Shape (m,)
     const b = [1, ...range(K).map(i => 0)];
-    console.log("b length", b.length);
     
     // d = vector appearing in the quad prog objective function as a^T.
     // Shape (n,)
-    const D = dot(transpose(M).data, P.data);
-    console.log("d length", D[0].length);
-
+    const D = df.dot(df.transpose(M), P).data;
 
     // Solve each quadratic programming problem.
-    let exposures = D.map(d => {
+    const exposuresData = D.map(d => {
         const { solution } = solveQP(G, d, C, b, 1);
         return solution;
     });
-    
+
     // Some exposure values may be negative due to numerical issues,
     // but very close to zero. Change these negative values to zero and renormalize.
-    exposures = exposures.map(row => row.map(val => (val < 0 ? 0 : val)));
+    const exposures = df.normalizeRows(df.clipLower({
+        data: exposuresData,
+        index: origM.index,
+        columns: origP.index,
+    }));
     
-    let exposuresDf = { data: exposures, index: origM.index, columns: origP.index };
-    exposuresDf = normalizeRows(exposuresDf);
-    
-    return exposuresDf;
+    return exposures;
 }
