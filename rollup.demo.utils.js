@@ -6,6 +6,11 @@ function htmlFromTemplate({ title, publicPath, cssFile, jsFile }) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="${publicPath}${cssFile}"/>
+        <style>
+            body {
+                height: 100vh;
+            }
+        </style>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -1,15 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-    RecoilRoot
-  } from 'recoil';
+import AppProvider from './AppProvider';
 import App from './App.js';
 
 import './index.scss';
 
 ReactDOM.render(
-    <RecoilRoot>
+    <AppProvider>
         <App />
-    </RecoilRoot>,
+    </AppProvider>,
     document.getElementById('root')
 );

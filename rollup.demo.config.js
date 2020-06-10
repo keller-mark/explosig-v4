@@ -56,6 +56,11 @@ const baseConfig = {
         json(),
         commonjs({
             include: /node_modules/,
+            exclude: [
+                // The following are to fix [!] Error: 'import' and 'export' may only appear at the top level.
+                // Reference: https://github.com/rollup/plugins/issues/304
+                'node_modules/symbol-observable/es/index.js',
+            ],
             namedExports: {
                 'node_modules/react/index.js': Object.keys(react),
                 'node_modules/react-is/index.js': Object.keys(reactIs),

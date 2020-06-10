@@ -1,50 +1,82 @@
-import React, { useEffect } from 'react';
-import { useRecoilState } from "recoil";
-import fromEntries from "object.fromentries";
-import { MUT_TYPES } from './constants';
-import { createCategoricalScale, createContinuousScale } from './scales';
+import React, { useState, useEffect, useRef } from 'react';
+import styled from "styled-components";
+import Split from 'react-split';
+import { MUT_TYPES, CAT_TYPES } from './utils/constants';
+import ExplorerMultiSample from './ExplorerMultiSample';
 
-function SigNames(props) {
-    const { catType, sigScaleAtoms } = props;
-    const [sigScaleDomain, setSigScaleDomain] = useRecoilState(sigScaleAtoms.domain);
-    return (
-        <ul>
-            {sigScaleDomain.map(d => (
-                <li key={d}>{catType} {d}</li>
-            ))}
-        </ul>
-    );
-}
+const StyledExplorer = styled("div")`
+    
+`;
 
+const StyledSplit = styled(Split)`
+    width: 100%;
+
+    .gutter {
+        float: left;
+        height: 300px;
+        background-color: white;
+        background-repeat: no-repeat;
+        background-position: 50%;
+
+        transition: background-color 0.5s ease;
+        &:hover {
+            background-color: #eee;
+        }
+
+        &.gutter-horizontal {
+            cursor: col-resize;
+    
+            .gutter-inner {
+                height: 300px;
+                width: 1px;
+                background-color: silver;
+                position: relative;
+                left: 5px;
+            }
+        }
+    }
+`;
+
+const StyledPane = styled("div")`
+    float: left;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    height: 300px;
+`;
 
 export default function Explorer(props) {
     const {
-        projectsScaleAtoms,
-        mutTypeScaleAtoms,
-        catTypeScaleAtoms,
-        catTypeToSigScaleAtoms
+      
     } = props;
-
-    const [projectsScaleDomain, setProjectsScaleDomain] = useRecoilState(projectsScaleAtoms.domain);
-    const [mutTypeScaleDomain, setMutTypeScaleDomain] = useRecoilState(mutTypeScaleAtoms.domain);
-    const [catTypeScaleDomain, setCatTypeScaleDomain] = useRecoilState(catTypeScaleAtoms.domain);
-
+    
     return (
-        <div>
-            <ul>
-                {projectsScaleDomain.map((d) => (
-                    <li key={d}>{d}</li>
-                ))}
-            </ul>
-            <ul>
-                {mutTypeScaleDomain.map((d) => (
-                    <li key={d}>{d}</li>
-                ))}
-            </ul>
-            {Object.entries(catTypeToSigScaleAtoms).map(([catType, sigScaleAtoms]) => (
-                <SigNames key={catType} catType={catType} sigScaleAtoms={sigScaleAtoms} />
-            ))}
-        </div>
-    )
-
+        <StyledExplorer>
+            <StyledSplit
+                sizes={[45, 45, 10]}
+                minSize={100}
+                gutterSize={10}
+                snapOffset={0}
+                direction="horizontal"
+                gutter={(index, direction) => {
+                    const gutter = document.createElement('div');
+                    gutter.className = `gutter gutter-${direction}`;
+                    const gutterInner = document.createElement('div');
+                    gutterInner.className = `gutter-inner`;
+                    gutter.appendChild(gutterInner);
+                    return gutter;
+                }}
+            >
+                <StyledPane>
+                    Overview
+                </StyledPane>
+                <StyledPane>
+                    <ExplorerMultiSample />
+                </StyledPane>
+                <StyledPane>
+                    Legends
+                </StyledPane>
+            </StyledSplit>
+        </StyledExplorer>
+    );
 }
