@@ -5,12 +5,12 @@ import styled from "styled-components";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils/index.js";
 import { projectsScaleAtoms, mutTypeScaleAtoms, catTypeScaleAtoms } from "./atoms";
 import { MUT_TYPES, CAT_TYPES } from './constants';
-import { createCategoricalScale, createContinuousScale } from './scales';
+import { createCategoricalScale, createContinuousScale, createDataset } from './scales';
 import Explorer from './Explorer';
 
 
 const StyledApp = styled("div")`
-    font-size: 48px;
+    font-size: 28px;
 `;
 
 export default function App() {
@@ -30,6 +30,8 @@ export default function App() {
     const catTypeToSigExposureNormalizedScaleAtomsRef = useRef({});
     const catTypeToSigExposureCosineSimilarityScaleAtomsRef = useRef({});
 
+    const catTypeToSigExposureDatasetAtomsRef = useRef({});
+
     useEffect(() => {
         catTypeToSigScaleAtomsRef.current = fromEntries(
             catTypeScaleDomain.map(catType => ([
@@ -37,7 +39,7 @@ export default function App() {
               createCategoricalScale({
                   id: `${catType}.sigs`,
                   name: `${catType} Signature`,
-                  domain: [1, 2],
+                  domain: ["1", "2", "4", "5", "6", "13", "17"],
               })
             ]))
         );
@@ -71,6 +73,17 @@ export default function App() {
                 id: `${catType}.sigExposure`,
                 name: `${catType} Exposure`,
                 domain: [0, Infinity]
+              })
+            ]))
+        );
+
+        catTypeToSigExposureDatasetAtomsRef.current = fromEntries(
+            catTypeScaleDomain.map(catType => ([
+              catType,
+              createDataset({
+                id: `${catType}.sigExposure`,
+                name: `${catType} Exposure`,
+                data: []
               })
             ]))
         );
@@ -108,42 +121,7 @@ export default function App() {
             ]))
         );
           
-    }, [catTypeScaleDomain])
-
-
-    useEffect(() => {
-        let isMounted = true;
-
-        readTsv(fetch("/counts.TCGA-LUAD_LUAD_mc3.v0.2.8.WXS.SBS-96.tsv"))
-            .then(d => {
-                if(isMounted) {
-                    setMutationData(d);
-                }
-            });
-        
-        readTsv(fetch("/COSMIC-signatures.SBS-96.tsv"))
-            .then(d => {
-                if(isMounted) {
-                    setSignatureData(d);
-                    setActiveSignatureData(selectRows(d, ["1", "2", "4", "5", "6", "13", "17"]));
-                }
-            });
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
-
-    useEffect(() => {
-        if(mutationData && activeSignatureData) {
-            console.log(mutationData);
-            console.log(activeSignatureData);
-            const exposuresData = signatureEstimationQP(mutationData, activeSignatureData);
-            console.log(exposuresData);
-
-            setProjectsScaleDomain(["TCGA-LUAD_LUAD_mc3.v0.2.8"]);
-        }
-    }, [mutationData, activeSignatureData]);
+    }, [catTypeScaleDomain]);
 
     return (
         <StyledApp>

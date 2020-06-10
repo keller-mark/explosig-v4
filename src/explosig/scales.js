@@ -19,13 +19,13 @@ export function createAbstractScale(params) {
       key: `scale.${id}.domain`,
       default: domain,
     }),
-    domainSortedIndices: atom({
-      key: `scale.${id}.domainSortedIndices`,
-      default: null,
+    domainFiltered: atom({
+      key: `scale.${id}.domainFiltered`,
+      default: domain,
     }),
-    domainFilteredIndices: atom({
-      key: `scale.${id}.domainFilteredIndices`,
-      default: null,
+    highlight: atom({
+        key: `scale.${id}.highlight`,
+        default: null,
     }),
   };
 }
@@ -43,6 +43,10 @@ export function createCategoricalScale(params) {
       key: `scale.${id}.domainHuman`,
       default: domainHuman,
     }),
+    domainSorted: atom({
+        key: `scale.${id}.domainSorted`,
+        default: domain,
+    }),
   };
 }
 
@@ -52,4 +56,23 @@ export function createContinuousScale(params) {
   return {
     ...abstractScale,
   };
+}
+
+
+export function createDataset(params) {
+    const { id, name, data } = params;
+    return {
+        id: atom({
+            key: `data.${id}.id`,
+            default: id,
+        }),
+        name: atom({
+            key: `data.${id}.name`,
+            default: name,
+        }),
+        data: atom({
+            key: `data.${id}.data`,
+            default: data,
+        }),
+    };
 }

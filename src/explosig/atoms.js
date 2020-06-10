@@ -1,7 +1,7 @@
 import fromEntries from "object.fromentries";
 
 import { MUT_TYPES, CAT_TYPES } from './constants';
-import { createCategoricalScale, createContinuousScale } from './scales';
+import { createCategoricalScale, createContinuousScale, createDataset } from './scales';
 
 export const mutTypeScaleAtoms = createCategoricalScale({
     id: "mutType",
@@ -18,7 +18,7 @@ export const catTypeScaleAtoms = createCategoricalScale({
 export const projectsScaleAtoms = createCategoricalScale({
   id: "projId",
   name: "Study",
-  domain: [],
+  domain: ["TCGA-LUAD_LUAD_mc3.v0.2.8"],
 });
 
 export const samplesScaleAtoms = createCategoricalScale({
