@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import styled from "styled-components";
+import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
-import { DatasetContainer, CategoricalScale } from "../rctplotlib";
+import { Dataset, CategoricalScale, StackedBarPlot, ContinuousScale } from "../rctplotlib";
 import { MUT_TYPES, CAT_TYPES } from './utils/constants';
 import { datasetsSlice, scalesSlice } from './utils/slices';
 const { setDataset } = datasetsSlice.actions;
@@ -21,14 +22,17 @@ const exposuresPromise = Promise.all([mutationDataPromise, activeSignatureDataPr
     return Promise.resolve(signatureEstimationQP(md, asd))
 });
 
-const exposuresDataset = new DatasetContainer({
-    id: "TCGA-LUAD_LUAD_mc3.v0.2.8.WXS.SBS-96.exposures",
+const exposuresDataset = new Dataset({
+    id: "exposures.SBS-96",
     name: "TCGA-LUAD_LUAD_mc3.v0.2.8 WXS SBS-96 Exposures",
-    data: exposuresPromise,
+    data: exposuresPromise.then(df => {
+        const arr = df.data.map((row, i) => fromEntries([...row.map((el, j) => [df.columns[j], el]), ["sampleId", df.index[i]]]));
+        return Promise.resolve(arr);
+    }),
 });
 
 const sampleIdScale = new CategoricalScale({
-    id: "TCGA-LUAD_LUAD_mc3.v0.2.8.WXS.SBS-96.sampleId",
+    id: "sampleId",
     name: "Sample",
     domain: mutationDataPromise.then(d => d.index)
 });
@@ -39,35 +43,49 @@ const signatureScale = new CategoricalScale({
     domain: ["1", "2", "4", "5", "6", "13", "17"]
 });
 
+const exposuresScale = new ContinuousScale({
+    id: "SBS-96.exposures",
+    name: "SBS-96 Exposures",
+    domain: [0, 1],
+})
+
 function ExplorerMultiSample(props) {
     const {
         setDataset,
         setScale,
-        scales,
-        datasets,
     } = props;
 
     useEffect(() => {
-        setDataset({ id: "TCGA-LUAD_LUAD_mc3.v0.2.8.WXS.SBS-96.exposures", dataset: exposuresDataset });
-        setScale({ id: "TCGA-LUAD_LUAD_mc3.v0.2.8.WXS.SBS-96.sampleId", scale: sampleIdScale });
+        setDataset({ id: "exposures.SBS-96", dataset: exposuresDataset });
+        setScale({ id: "sampleId", scale: sampleIdScale });
         setScale({ id: "LUAD.SBS-96.signatures", scale: signatureScale });
+        setScale({ id: "SBS-96.exposures", scale: exposuresScale });
     }, []);
-
-    useEffect(() => {
-        console.log(datasets);
-        console.log(scales);
-    }, [datasets, scales]);
 
     return (
         <div>
            MultiSample
+
+           <button onClick={() => sampleIdScale.setDomain(sampleIdScale.domain.slice(0, 10))}>Update signature domain</button>
+
+           <StackedBarPlot
+                id="SBS-96.LUAD.exposures-stacked-bar"
+                data="exposures.SBS-96"
+                x="sampleId"
+                y="SBS-96.exposures"
+                color="LUAD.SBS-96.signatures"
+
+                width={500}
+                height={300}
+                top={0}
+                left={0}
+           />
         </div>
     );
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    datasets: state.datasets,
-    scales: state.scales,
+
 });
   
 const mapDispatchToProps = (dispatch, ownProps) => ({

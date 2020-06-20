@@ -2,7 +2,7 @@ import { descending as d3_descending, ascending as d3_ascending } from "d3-array
 import { scaleOrdinal as d3_scaleOrdinal } from 'd3-scale';
 import { hierarchy as d3_hierarchy } from 'd3-hierarchy';
 import AbstractScale from './AbstractScale.js';
-import DatasetContainer from './../datasets/DatasetContainer.js';
+import Dataset from './../datasets/Dataset.js';
 import { filterHierarchy } from './../helpers.js';
 
 /**
@@ -182,7 +182,7 @@ export default class CategoricalScale extends AbstractScale {
      * @param {object} dataContainer DataContainer instance holding the hierarchy data.
      */
     sortByHierarchy(dataContainer) {
-        console.assert(dataContainer instanceof DatasetContainer);
+        console.assert(dataContainer instanceof Dataset);
         if(dataContainer.isLoading) {
             return;
         }

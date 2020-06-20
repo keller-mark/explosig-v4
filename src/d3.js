@@ -9,6 +9,7 @@ import { format } from "d3-format";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { mouse, event as d3_event } from "d3-selection";
 import { scaleLinear, scaleOrdinal } from "d3-scale";
+import { stack, stackOrderNone, stackOffsetNone } from 'd3-shape';
 import { axisTop, axisBottom } from "d3-axis";
 import { scale as vega_scale } from "vega-scale";
 import { extent, sum } from "d3-array";
@@ -33,6 +34,9 @@ export default {
     mouse,
     scaleLinear,
     scaleOrdinal,
+    stack,
+    stackOrderNone,
+    stackOffsetNone,
     axisTop,
     axisBottom,
     scaleBand,

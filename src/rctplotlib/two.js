@@ -1,5 +1,5 @@
 import d3 from '../d3.js';
-import { getRetinaRatio } from './canvas.js';
+import { getRetinaRatio } from './helpers.js';
 
 /**
  * Represents a rectangle to be rendered.

@@ -4,7 +4,7 @@ const DISPATCH_EVENT_UPDATE = "update";
 /**
  * Represents a container of a data array.
  */
-export default class DatasetContainer {
+export default class Dataset {
 
     /**
      * Create a data container.

@@ -90,7 +90,7 @@ export default class AbstractScale extends AbstractScaleDispatcher {
     static unknownColor = "#E3E3E3";
     static unknownString = "Unknown";
 
-    static defaultColorScale = d3_interpolateRdYlBu;
+    static defaultColorScale = d3_interpolateViridis;
 
     /**
      * Create a scale.

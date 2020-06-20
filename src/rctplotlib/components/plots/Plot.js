@@ -1,15 +1,31 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 export default function Plot(props) {
+    const {
+        draw,
+        iteration,
+        height,
+        width,
+        top,
+        left,
+        highlightX1,
+        highlightX2,
+        highlightY1,
+        highlightY2,
+    } = props;
 
     const canvasRef = useRef();
     const hiddenCanvasRef = useRef();
 
+    useEffect(() => {
+        draw(canvasRef.current, hiddenCanvasRef.current);
+    }, [draw, iteration]);
+
     const canvasStyle = {
-        'height': (this.pHeight) + 'px', 
-        'width': (this.pWidth) + 'px',
-        'top': (this.pMarginTop) + 'px',
-        'left': (this.pMarginLeft) + 'px'
+        'height': (height) + 'px', 
+        'width': (width) + 'px',
+        'top': (top) + 'px',
+        'left': (left) + 'px'
     };
 
     const tooltipStyle = {};
@@ -18,37 +34,37 @@ export default function Plot(props) {
         <div>
             <canvas
                 ref={canvasRef}
-                class="vdp-plot" 
+                className="vdp-plot" 
                 style={canvasStyle}
             />
             <canvas
                 ref={hiddenCanvasRef}
-                class="vdp-plot-hidden" 
+                className="vdp-plot-hidden" 
                 style={canvasStyle}
             />
-            {showHighlightX1 && (
+            {highlightX1 && (
                 <div
                     style={{
-                        'height': (this.pHeight) + 'px', 
+                        'height': (height) + 'px', 
                         'width': '1px',
-                        'top': (this.pMarginTop) + 'px',
-                        'left': (this.pMarginLeft + this.highlightX1 - 0.5) + 'px'
+                        'top': (top) + 'px',
+                        'left': (left + highlightX1 - 0.5) + 'px'
                     }}
-                    class="vdp-plot-highlight"
+                    className="vdp-plot-highlight"
                 />
             )}
-            {showHighlightX2 && (
+            {highlightX2 && (
                 <div
                     style={{
-                        'height': (this.pHeight) + 'px', 
+                        'height': (height) + 'px', 
                         'width': '1px',
-                        'top': (this.pMarginTop) + 'px',
-                        'left': (this.pMarginLeft + this.highlightX2 - 0.5) + 'px'
+                        'top': (top) + 'px',
+                        'left': (left + highlightX2 - 0.5) + 'px'
                     }}
-                    class="vdp-plot-highlight"
+                    className="vdp-plot-highlight"
                 />
             )}
-            {showTooltip && (
+            {/*showTooltip && (
                 <div class="vdp-tooltip" style={tooltipStyle}>
                     <table>
                         <tr>
@@ -61,7 +77,7 @@ export default function Plot(props) {
                         </tr>
                     </table>
                 </div>
-            )}
+            )*/}
         </div>
     );
 }

@@ -5,10 +5,10 @@ import SortOptions from './components/SortOptions.vue';
 import Axis from './components/axes/Axis.vue';
 import GenomeAxis from './components/axes/GenomeAxis.vue';
 import DendrogramAxis from './components/axes/DendrogramAxis.vue';
-
+*/
 // Plots
-import StackedBarPlot from './components/plots/StackedBarPlot.vue';
-import BarPlot from './components/plots/BarPlot.vue';
+import StackedBarPlot from './components/plots/StackedBarPlot';
+/*import BarPlot from './components/plots/BarPlot.vue';
 import ScatterPlot from './components/plots/ScatterPlot.vue';
 import BoxPlot from './components/plots/BoxPlot.vue';
 import MultiBoxPlot from './components/plots/MultiBoxPlot.vue';
@@ -40,7 +40,7 @@ import Legend from './components/legends/Legend.vue';
 */
 
 // Classes
-import DatasetContainer from './datasets/DatasetContainer';
+import Dataset from './datasets/Dataset';
 import HistoryStack, { computedParam } from './history/HistoryStack';
 import HistoryEvent from './history/HistoryEvent';
 import AbstractScale from './scales/AbstractScale';
@@ -84,7 +84,6 @@ export {
     Axis,
     GenomeAxis,
     DendrogramAxis,
-    StackedBarPlot,
     BarPlot,
     ScatterPlot,
     BoxPlot,
@@ -110,8 +109,9 @@ export {
     CategoricalLegend,
     ContinuousLegend,
     Legend,*/
+    StackedBarPlot,
     // Classes
-    DatasetContainer,
+    Dataset,
     HistoryStack,
     HistoryEvent,
     AbstractScale,
