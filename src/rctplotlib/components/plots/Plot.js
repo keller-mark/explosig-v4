@@ -1,4 +1,23 @@
 import React, { useRef, useEffect } from "react";
+import styled from "styled-components";
+
+const StyledPlot = styled("div")`
+    width: ${props => props.width}px;
+    height: ${props => props.height}px;
+    top: ${props => props.top}px;
+    left: ${props => props.left}px;
+    position: absolute;
+
+    canvas:nth-child(1) {
+        width: ${props => props.width}px;
+        height: ${props => props.height}px;
+        top: 0px;
+        left: 0px;
+    }
+    canvas:nth-child(2) {
+        display: none;
+    }
+`;
 
 export default function Plot(props) {
     const {
@@ -31,15 +50,18 @@ export default function Plot(props) {
     const tooltipStyle = {};
     
     return (
-        <div>
+        <StyledPlot
+            width={width}
+            height={height}
+            top={top}
+            left={left}
+        >
             <canvas
                 ref={canvasRef}
-                className="vdp-plot" 
                 style={canvasStyle}
             />
             <canvas
                 ref={hiddenCanvasRef}
-                className="vdp-plot-hidden" 
                 style={canvasStyle}
             />
             {highlightX1 && (
@@ -78,6 +100,6 @@ export default function Plot(props) {
                     </table>
                 </div>
             )*/}
-        </div>
+        </StyledPlot>
     );
 }

@@ -7,6 +7,8 @@ import GenomeAxis from './components/axes/GenomeAxis.vue';
 import DendrogramAxis from './components/axes/DendrogramAxis.vue';
 */
 // Plots
+import Subplots from './components/Subplots';
+import PlotContainer from './components/PlotContainer';
 import StackedBarPlot from './components/plots/StackedBarPlot';
 /*import BarPlot from './components/plots/BarPlot.vue';
 import ScatterPlot from './components/plots/ScatterPlot.vue';
@@ -79,7 +81,7 @@ SVGGraphicsElement.prototype.getBBox = function() {
 
 export {
     // Components
-    /*PlotContainer,
+    /*
     SortOptions,
     Axis,
     GenomeAxis,
@@ -108,7 +110,10 @@ export {
     GenomeStackedBarPlot,
     CategoricalLegend,
     ContinuousLegend,
-    Legend,*/
+    Legend,
+    */
+    Subplots,
+    PlotContainer,
     StackedBarPlot,
     // Classes
     Dataset,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from "styled-components";
 import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
-import { Dataset, CategoricalScale, StackedBarPlot, ContinuousScale } from "../rctplotlib";
+import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale } from "../rctplotlib";
 import { MUT_TYPES, CAT_TYPES } from './utils/constants';
 import { datasetsSlice, scalesSlice } from './utils/slices';
 const { setDataset } = datasetsSlice.actions;
@@ -68,18 +68,23 @@ function ExplorerMultiSample(props) {
 
            <button onClick={() => sampleIdScale.setDomain(sampleIdScale.domain.slice(0, 10))}>Update signature domain</button>
 
-           <StackedBarPlot
-                id="SBS-96.LUAD.exposures-stacked-bar"
-                data="exposures.SBS-96"
-                x="sampleId"
-                y="SBS-96.exposures"
-                color="LUAD.SBS-96.signatures"
-
+            <Subplots
+                ncols={2}
+                nrows={2}
                 width={500}
                 height={300}
-                top={0}
-                left={0}
-           />
+            >
+                <PlotContainer>
+                    <StackedBarPlot
+                        id="SBS-96.LUAD.exposures-stacked-bar"
+                        slot="plot"
+                        data="exposures.SBS-96"
+                        x="sampleId"
+                        y="SBS-96.exposures"
+                        color="LUAD.SBS-96.signatures"
+                    />
+                </PlotContainer>
+            </Subplots>
         </div>
     );
 }
