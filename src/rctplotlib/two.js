@@ -150,10 +150,11 @@ export class TwoText {
  */
 export default class Two {
 
-    constructor({ width, height, domElement }) {
+    constructor({ width, height, domElement, hiddenDomElement }) {
         this.width = width;
         this.height = height;
         this.domElement = domElement;
+        this.hiddenDomElement = hiddenDomElement;
 
         this.elements = [];
 
@@ -203,7 +204,18 @@ export default class Two {
         this.domElement.setAttribute("height", scaledHeight);
         context.scale(ratio, ratio);
 
+        this.ratio = ratio;
+        this.scaledWidth = scaledWidth;
+        this.scaledHeight = scaledHeight;
         this.context = context;
+
+        if(this.hiddenDomElement && this.hiddenDomElement.nodeName.toLowerCase() === "canvas") {
+            const hiddenContext = this.hiddenDomElement.getContext('2d');
+            this.hiddenDomElement.setAttribute("width", scaledWidth);
+            this.hiddenDomElement.setAttribute("height", scaledHeight);
+            hiddenContext.scale(ratio, ratio);
+            this.hiddenContext = hiddenContext;
+        }
     }
 
     /**
@@ -634,4 +646,18 @@ export default class Two {
         canvasSelection.on("mouseout", null);
         canvasSelection.on("click", null);
     }
+
+    getHiddenContext() {
+        return this.hiddenContext;
+    }
+
+    getHiddenColor(mouseX, mouseY) {
+        const ratio = this.ratio;
+        const scaledHeight = this.scaledHeight;
+        const scaledWidth = this.scaledWidth;
+        // Get the corresponding pixel color on the hidden canvas
+        const col = this.hiddenContext.getImageData(mouseX * ratio, mouseY * ratio, scaledWidth, scaledHeight).data;
+        const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+        return colString;
+    };
 }

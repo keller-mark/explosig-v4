@@ -6,20 +6,20 @@ const StyledPlotContainer = styled("div")`
     height: ${props => props.height}px;
     top: ${props => props.top}px;
     left: ${props => props.left}px;
-    position: absolute;
+    position: relative;
 `;
 
 
 export default function PlotContainer(props) {
     const {
-        top,
-        left,
+        top = 0,
+        left = 0,
         marginTop = 0,
         marginLeft = 0,
         marginRight = 0,
         marginBottom = 0,
-        width,
-        height,
+        width = 0,
+        height = 0,
         children,
     } = props;
 

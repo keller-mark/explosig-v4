@@ -13,9 +13,30 @@ const StyledPlot = styled("div")`
         height: ${props => props.height}px;
         top: 0px;
         left: 0px;
+        position: absolute;
     }
     canvas:nth-child(2) {
         display: none;
+    }
+`;
+
+const StyledTooltip = styled.div.attrs(props => ({
+    style: {
+        top: `${props.top}px`,
+        left: `${props.left}px`
+    }
+}))`
+    position: fixed;
+    border: 1px solid rgb(205, 205, 205);
+    background-color: rgba(255, 255, 255, 0.95);
+    z-index: 100;
+    padding: 0.25rem;
+    border-radius: 3px;
+    transform: translate(10%, -50%);
+
+    table > tr > th {
+        text-align: right;
+        padding-right: 5px;
     }
 `;
 
@@ -31,6 +52,7 @@ export default function Plot(props) {
         highlightX2,
         highlightY1,
         highlightY2,
+        tooltip,
     } = props;
 
     const canvasRef = useRef();
@@ -39,13 +61,6 @@ export default function Plot(props) {
     useEffect(() => {
         draw(canvasRef.current, hiddenCanvasRef.current);
     }, [draw, iteration]);
-
-    const canvasStyle = {
-        'height': (height) + 'px', 
-        'width': (width) + 'px',
-        'top': (top) + 'px',
-        'left': (left) + 'px'
-    };
 
     const tooltipStyle = {};
     
@@ -56,14 +71,8 @@ export default function Plot(props) {
             top={top}
             left={left}
         >
-            <canvas
-                ref={canvasRef}
-                style={canvasStyle}
-            />
-            <canvas
-                ref={hiddenCanvasRef}
-                style={canvasStyle}
-            />
+            <canvas ref={canvasRef} />
+            <canvas ref={hiddenCanvasRef} />
             {highlightX1 && (
                 <div
                     style={{
@@ -86,20 +95,26 @@ export default function Plot(props) {
                     className="vdp-plot-highlight"
                 />
             )}
-            {/*showTooltip && (
-                <div class="vdp-tooltip" style={tooltipStyle}>
+            {tooltip && (
+                <StyledTooltip
+                    top={tooltip.top}
+                    left={tooltip.left}
+                >
                     <table>
-                        <tr>
-                            <th>{ this._xScale.name }</th>
-                            <td>{ this.tooltipInfo.x }</td>
-                        </tr>
-                        <tr>
-                            <th>{ this._yScale.name }</th>
-                            <td>{ this.tooltipInfo.y }</td>
-                        </tr>
+                        <tbody>
+                        {Object.entries(tooltip)
+                            .filter(([k, v]) => !["top", "left"].includes(k))
+                            .map(([k, v]) => (
+                                <tr key={k}>
+                                    <th>{k}</th>
+                                    <td>{v}</td>
+                                </tr>
+                            )
+                        )}
+                        </tbody>
                     </table>
-                </div>
-            )*/}
+                </StyledTooltip>
+            )}
         </StyledPlot>
     );
 }

@@ -111,6 +111,28 @@ export const seededRandom = (seed) => {
     }
 }
 
+
+/*
+ * Generates the next color in the sequence, 
+ * going from 0,0,0 to 255,255,255.
+ * Reference: http://stackoverflow.com/a/15804183
+ */
+export const createNextColor = () => {
+    let nextCol = 1;
+    return () => {
+        let ret = [];
+        if(nextCol < 16777215){
+            ret.push(nextCol & 0xff); // R
+            ret.push((nextCol & 0xff00) >> 8); // G 
+            ret.push((nextCol & 0xff0000) >> 16); // B
+
+            nextCol += 20;
+        }
+        let col = "rgb(" + ret.join(',') + ")";
+        return col;
+    };
+}
+
 /**
  * Given an SVG DOM node, return the SVG contents as a data URI that can be saved to a file.
  * @private

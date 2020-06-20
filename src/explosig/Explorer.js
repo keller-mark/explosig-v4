@@ -13,7 +13,7 @@ const StyledSplit = styled(Split)`
 
     .gutter {
         float: left;
-        height: 300px;
+        height: calc(100vh - 49px - 24px);
         background-color: white;
         background-repeat: no-repeat;
         background-position: 50%;
@@ -27,7 +27,7 @@ const StyledSplit = styled(Split)`
             cursor: col-resize;
     
             .gutter-inner {
-                height: 300px;
+                height: calc(100vh - 49px - 24px);
                 width: 1px;
                 background-color: silver;
                 position: relative;
@@ -42,18 +42,13 @@ const StyledPane = styled("div")`
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
-    height: 300px;
+    height: calc(100vh - 49px - 24px);
 `;
 
 export default function Explorer(props) {
     const {
       
     } = props;
-
-
-    useEffect(() => {
-        
-    });
     
     return (
         <StyledExplorer>
@@ -70,6 +65,9 @@ export default function Explorer(props) {
                     gutterInner.className = `gutter-inner`;
                     gutter.appendChild(gutterInner);
                     return gutter;
+                }}
+                onDragEnd={() => {
+                    window.dispatchEvent(new Event('resize'));
                 }}
             >
                 <StyledPane>

@@ -11,8 +11,8 @@ export default function Subplots(props) {
     const {
         nrows=1,
         ncols=1,
-        width,
-        height,
+        width = 0,
+        height = 0,
         children,
     } = props;
 

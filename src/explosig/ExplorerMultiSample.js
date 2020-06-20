@@ -4,8 +4,9 @@ import styled from "styled-components";
 import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
 import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale } from "../rctplotlib";
-import { MUT_TYPES, CAT_TYPES } from './utils/constants';
-import { datasetsSlice, scalesSlice } from './utils/slices';
+import { MUT_TYPES, CAT_TYPES } from './utils/constants.js';
+import { useColumnSize } from './utils/hooks.js';
+import { datasetsSlice, scalesSlice } from './utils/slices.js';
 const { setDataset } = datasetsSlice.actions;
 const { setScale } = scalesSlice.actions;
 
@@ -55,6 +56,8 @@ function ExplorerMultiSample(props) {
         setScale,
     } = props;
 
+    const [columnWidth, columnHeight, columnRef] = useColumnSize();
+
     useEffect(() => {
         setDataset({ id: "exposures.SBS-96", dataset: exposuresDataset });
         setScale({ id: "sampleId", scale: sampleIdScale });
@@ -63,28 +66,27 @@ function ExplorerMultiSample(props) {
     }, []);
 
     return (
-        <div>
+        <div ref={columnRef}>
            MultiSample
 
            <button onClick={() => sampleIdScale.setDomain(sampleIdScale.domain.slice(0, 10))}>Update signature domain</button>
 
-            <Subplots
-                ncols={2}
-                nrows={2}
-                width={500}
-                height={300}
+
+            <PlotContainer
+                width={columnWidth}
+                height={400}
+                marginLeft={100}
+                marginBottom={100}
             >
-                <PlotContainer>
-                    <StackedBarPlot
-                        id="SBS-96.LUAD.exposures-stacked-bar"
-                        slot="plot"
-                        data="exposures.SBS-96"
-                        x="sampleId"
-                        y="SBS-96.exposures"
-                        color="LUAD.SBS-96.signatures"
-                    />
-                </PlotContainer>
-            </Subplots>
+                <StackedBarPlot
+                    id="SBS-96.LUAD.exposures-stacked-bar"
+                    slot="plot"
+                    data="exposures.SBS-96"
+                    x="sampleId"
+                    y="SBS-96.exposures"
+                    color="LUAD.SBS-96.signatures"
+                />
+            </PlotContainer>
         </div>
     );
 }

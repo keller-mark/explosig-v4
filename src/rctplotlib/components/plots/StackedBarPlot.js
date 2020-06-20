@@ -5,7 +5,8 @@ import Plot from "./Plot.js";
 import Two from "../../two.js";
 import d3 from "../../../d3.js";
 
-import { BAR_WIDTH_MIN, BAR_MARGIN_DEFAULT } from './../../constants.js';
+import { TOOLTIP_DEBOUNCE, BAR_WIDTH_MIN, BAR_MARGIN_DEFAULT } from './../../constants.js';
+import { createNextColor } from './../../helpers.js';
 
 import AbstractScale from './../../scales/AbstractScale.js';
 import Dataset from './../../datasets/Dataset.js';
@@ -30,7 +31,8 @@ function StackedBarPlot(props) {
         left,
         shouldFilterX = false,
         shouldFilterY = false,
-        barMarginX = BAR_MARGIN_DEFAULT
+        barMarginX = BAR_MARGIN_DEFAULT,
+        clickHandler = null
     } = props;
 
     const [iteration, iterate] = useReducer(i => i+1, 0);
@@ -39,8 +41,31 @@ function StackedBarPlot(props) {
     const [highlightScale, setHighlightScale] = useState(null);
     const [barWidth, setBarWidth] = useState(null);
 
-    console.log(dataDataset);
-    console.log(xScale, yScale, colorScale); 
+    const [tooltip, setTooltip] = useState(null);
+
+    const destroyTooltip = useCallback(() => {
+        setTooltip(null);
+
+        // Destroy all highlights here
+        xScale.emitHighlightDestroy();
+        yScale.emitHighlightDestroy();
+        colorScale.emitHighlightDestroy();
+    }, [xScale, yScale, colorScale]);
+
+    const showTooltip = useCallback((mouseX, mouseY, tX, tY, tColor) => {
+        // Dispatch highlights
+        xScale.emitHighlight(tX);
+        yScale.emitHighlight(tY);
+        colorScale.emitHighlight(tColor);
+
+        setTooltip({
+            left: mouseX,
+            top: mouseY,
+            [xScale.name]: xScale.toHuman(tX),
+            [yScale.name]: yScale.toHuman(tY),
+            [colorScale.name]: colorScale.toHuman(tColor),
+        });
+    }, [xScale, yScale, colorScale]);
 
     useEffect(() => {
         if(xScale && yScale && colorScale && dataDataset) {
@@ -106,7 +131,10 @@ function StackedBarPlot(props) {
             width,
             height,
             domElement: canvas,
+            hiddenDomElement: hiddenCanvas,
         });
+
+        const hiddenContext = two.hiddenContext;
 
         if(!(xScale && yScale && colorScale && dataDataset)) {
             return;
@@ -114,13 +142,9 @@ function StackedBarPlot(props) {
 
         if(dataDataset.isLoading || xScale.isLoading || yScale.isLoading || colorScale.isLoading) {
             return;
-        }
-
-        console.log(dataDataset)
-        
+        }        
         
         let dataCopy = dataDataset.dataCopy;
-
 
         let xScaleDomain;
         if(shouldFilterX) {
@@ -138,12 +162,9 @@ function StackedBarPlot(props) {
 
         dataCopy = dataCopy.filter((el) => xScaleDomain.includes(el[x]));
 
-        console.log(dataCopy);
-
         const xD3 = d3.scaleBand()
             .domain(xScaleDomain)
             .range([0, width]);
-
         setHighlightScale(xD3);
 
         const yD3 = d3.scaleLinear()
@@ -158,25 +179,22 @@ function StackedBarPlot(props) {
             .value((d, key) => { return d[key] || 0; })
             .order(d3.stackOrderNone)
             .offset(d3.stackOffsetNone);
-
         const series = stack(dataCopy);
 
-        console.log(series);
+        // Set up the hidden color mapping.
+        const colToNode = {};
+        const nextColor = createNextColor();
 
-        /*
-         * Draw the bars
-         */
+        // Compute bar sizes.
         let barMarginXValue = barMarginX;
         if(barWidth - barMarginX <= BAR_WIDTH_MIN) {
             barMarginXValue = 0;
         }
 
+        // Draw bars.
         series.forEach((layer) => {
             const col = colorScale.color(layer["key"]);
             layer.forEach((d) => {
-                /*const hiddenCol = genColor();
-                colToNode[hiddenCol] = { "x": d.data[vm.x], "y": d.data[layer["key"]], "c": layer["key"] };
-                contextHidden.fillStyle = hiddenCol;*/
                 let rectHeight = yD3(d[0]) - yD3(d[1]);
                 if(rectHeight + yD3(d[1]) > height) {
                     rectHeight = height - yD3(d[1]);
@@ -185,10 +203,65 @@ function StackedBarPlot(props) {
                 const rect = two.makeRect(xD3(d.data[x]) + (barMarginXValue/2), yD3(d[1]), barWidth - barMarginXValue, rectHeight);
                 rect.fill = col;
                 rect.stroke = null;
+
+                // Draw hidden elements.
+                if(hiddenContext) {
+                    const hiddenCol = nextColor();
+                    colToNode[hiddenCol] = { "x": d.data[x], "y": d.data[layer["key"]], "color": layer["key"] };
+                    hiddenContext.fillStyle = hiddenCol;
+                    hiddenContext.fillRect(xD3(d.data[x]), yD3(d[1]), barWidth, rectHeight);
+                }
             });
         });
 
         two.update();
+
+        if(!hiddenContext) {
+            /* Ignore interactivity if SVG was passed in (for download). */
+            return;
+        }
+
+        /*
+         * Listen for mouse events
+         */
+
+        const canvasSelection = d3.select(canvas);
+
+        const destroyTooltipDebounced = debounce(destroyTooltip, TOOLTIP_DEBOUNCE);
+        canvasSelection.on("mousemove", () => {
+            const mouse = d3.mouse(canvas);
+            const mouseX = mouse[0];
+            const mouseY = mouse[1];
+
+            const hiddenColor = two.getHiddenColor(mouseX, mouseY)
+            const node = colToNode[hiddenColor];
+
+            const mouseViewportX = d3.event.clientX;
+            const mouseViewportY = d3.event.clientY;
+
+            if(node) {
+                showTooltip(mouseViewportX, mouseViewportY, node["x"], node["y"], node["color"]); 
+            } else {
+                destroyTooltipDebounced();
+            }
+        })
+        .on("mouseleave", destroyTooltip);
+        
+        if(clickHandler) {
+            canvasSelection.on("click", () => {
+                const mouse = d3.mouse(canvas);
+                const mouseX = mouse[0];
+                const mouseY = mouse[1];
+
+                const hiddenColor = two.getHiddenColor(mouseX, mouseY)
+                const node = colToNode[hiddenColor];
+
+                if(node) {
+                    clickHandler(node["x"], node["y"], node["color"]); 
+                }
+            })
+        }
+
     }, [width, height, xScale, yScale, colorScale, dataDataset, id]);
 
 
@@ -202,6 +275,7 @@ function StackedBarPlot(props) {
             left={left}
             draw={draw}
             iteration={iteration}
+            tooltip={tooltip}
         />
     );
 }
