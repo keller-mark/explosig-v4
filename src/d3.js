@@ -8,14 +8,15 @@ import { select, create } from "d3-selection";
 import { format } from "d3-format";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { mouse, event as d3_event } from "d3-selection";
-import { scaleLinear, scaleOrdinal } from "d3-scale";
+import { scaleLinear, scaleLog, scaleTime, scaleOrdinal } from "d3-scale";
 import { stack, stackOrderNone, stackOffsetNone } from 'd3-shape';
-import { axisTop, axisBottom } from "d3-axis";
+import { axisTop, axisLeft, axisRight, axisBottom } from "d3-axis";
 import { scale as vega_scale } from "vega-scale";
 import { extent, sum } from "d3-array";
 import { hierarchy, cluster } from "d3-hierarchy";
 import { Delaunay as delaunay } from "d3-delaunay";
 import { tsvParseRows } from "d3-dsv";
+import { brushX, brushY } from 'd3-brush';
 
 /*
  * Same as `d3.scaleBand` but also supports `invert()`.
@@ -32,13 +33,17 @@ export default {
     format,
     interpolateViridis,
     mouse,
-    scaleLinear,
-    scaleOrdinal,
     stack,
     stackOrderNone,
     stackOffsetNone,
     axisTop,
+    axisLeft,
+    axisRight,
     axisBottom,
+    scaleLinear,
+    scaleOrdinal,
+    scaleLog,
+    scaleTime,
     scaleBand,
     extent,
     sum,
@@ -46,4 +51,6 @@ export default {
     cluster,
     delaunay,
     tsvParseRows,
+    brushX,
+    brushY,
 };

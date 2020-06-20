@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from "styled-components";
 import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
-import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale } from "../rctplotlib";
+import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale, Axis } from "../rctplotlib";
 import { MUT_TYPES, CAT_TYPES } from './utils/constants.js';
 import { useColumnSize } from './utils/hooks.js';
 import { datasetsSlice, scalesSlice } from './utils/slices.js';
@@ -74,12 +74,25 @@ function ExplorerMultiSample(props) {
 
             <PlotContainer
                 width={columnWidth}
-                height={400}
+                height={500}
                 marginLeft={100}
-                marginBottom={100}
+                marginBottom={200}
             >
+                <Axis
+                    id="SBS-96.LUAD.exposures-stacked-bar.axisLeft"
+                    slot="axisLeft"
+                    y="SBS-96.exposures"
+                    side="left"
+                />
+                <Axis
+                    id="SBS-96.LUAD.exposures-stacked-bar.axisBottom"
+                    slot="axisBottom"
+                    x="sampleId"
+                    side="bottom"
+                    tickRotation={-90}
+                />
                 <StackedBarPlot
-                    id="SBS-96.LUAD.exposures-stacked-bar"
+                    id="SBS-96.LUAD.exposures-stacked-bar.plot"
                     slot="plot"
                     data="exposures.SBS-96"
                     x="sampleId"

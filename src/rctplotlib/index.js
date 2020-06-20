@@ -1,8 +1,10 @@
 /*
 import PlotContainer from './components/PlotContainer.vue';
 import SortOptions from './components/SortOptions.vue';
+*/
 // Axes
-import Axis from './components/axes/Axis.vue';
+import Axis from './components/axes/Axis';
+/*
 import GenomeAxis from './components/axes/GenomeAxis.vue';
 import DendrogramAxis from './components/axes/DendrogramAxis.vue';
 */
@@ -83,7 +85,7 @@ export {
     // Components
     /*
     SortOptions,
-    Axis,
+    
     GenomeAxis,
     DendrogramAxis,
     BarPlot,
@@ -112,6 +114,7 @@ export {
     ContinuousLegend,
     Legend,
     */
+    Axis,
     Subplots,
     PlotContainer,
     StackedBarPlot,

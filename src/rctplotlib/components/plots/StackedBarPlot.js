@@ -29,8 +29,9 @@ function StackedBarPlot(props) {
         height,
         top,
         left,
-        shouldFilterX = false,
-        shouldFilterY = false,
+        // Options
+        shouldFilterX = true,
+        shouldFilterY = true,
         barMarginX = BAR_MARGIN_DEFAULT,
         clickHandler = null
     } = props;
@@ -265,7 +266,7 @@ function StackedBarPlot(props) {
     }, [width, height, xScale, yScale, colorScale, dataDataset, id]);
 
 
-    console.log("StackedBarPlot.render", iteration)
+    console.log("StackedBarPlot.render", iteration);
     
     return (
         <Plot

@@ -33,6 +33,7 @@ const StyledTooltip = styled.div.attrs(props => ({
     padding: 0.25rem;
     border-radius: 3px;
     transform: translate(10%, -50%);
+    font-size: 14px;
 
     table > tr > th {
         text-align: right;
@@ -61,8 +62,6 @@ export default function Plot(props) {
     useEffect(() => {
         draw(canvasRef.current, hiddenCanvasRef.current);
     }, [draw, iteration]);
-
-    const tooltipStyle = {};
     
     return (
         <StyledPlot
