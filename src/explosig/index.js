@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppProvider from './AppProvider';
+import Providers from './Providers';
 import App from './App.js';
 
 import './index.scss';
 
 ReactDOM.render(
-    <AppProvider>
+    <Providers>
         <App />
-    </AppProvider>,
+    </Providers>,
     document.getElementById('root')
 );

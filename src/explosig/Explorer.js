@@ -49,6 +49,11 @@ export default function Explorer(props) {
     const {
       
     } = props;
+
+
+    useEffect(() => {
+        
+    });
     
     return (
         <StyledExplorer>

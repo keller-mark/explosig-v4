@@ -5,9 +5,10 @@ import rootReducer from './utils/reducer';
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: []
 });
 
-export default function AppProvider({ children }) {
+export default function Providers({ children }) {
     return (
         <ReduxProvider store={store}>
             {children}
