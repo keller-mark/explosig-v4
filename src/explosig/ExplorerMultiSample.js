@@ -76,20 +76,19 @@ function ExplorerMultiSample(props) {
                 width={columnWidth}
                 height={500}
                 marginLeft={100}
-                marginBottom={200}
+                marginBottom={250}
             >
                 <Axis
                     id="SBS-96.LUAD.exposures-stacked-bar.axisLeft"
                     slot="axisLeft"
                     y="SBS-96.exposures"
-                    side="left"
                 />
                 <Axis
                     id="SBS-96.LUAD.exposures-stacked-bar.axisBottom"
                     slot="axisBottom"
                     x="sampleId"
-                    side="bottom"
                     tickRotation={-90}
+                    maxCharacters={10}
                 />
                 <StackedBarPlot
                     id="SBS-96.LUAD.exposures-stacked-bar.plot"

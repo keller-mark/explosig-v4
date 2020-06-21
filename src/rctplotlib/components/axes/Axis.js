@@ -54,7 +54,7 @@ function Axis(props) {
     const variable = (orientation === ORIENTATIONS.horizontal ? x : y);
     const variableScale = (orientation === ORIENTATIONS.horizontal ? xScale : yScale);
 
-    const computedTranslateX = (orientation === ORIENTATIONS.horizontal ? 0 : width);
+    const computedTranslateX = (orientation === ORIENTATIONS.horizontal ? 0 : width - 1);
     const computedTranslateY = 0;
 
     useEffect(() => {
@@ -586,6 +586,7 @@ function Axis(props) {
         const labelText = containerLabel.append("text")
             .style("text-anchor", "middle")
             .style("font-family", "Avenir")
+            .style("font-size", "16px")
             .text(varScale.name);
 
         let labelTextBbox;
@@ -614,7 +615,7 @@ function Axis(props) {
 
         let labelX, labelY, labelRotate;
         if(side === SIDES.left) {
-            labelY = -(axisBboxZoomedOut.width + (labelTextBbox.height / 2));
+            labelY = -((labelTextBbox.height / 3));
             labelX = -(height / 2);
             labelRotate = -90;
         } else if(side === SIDES.bottom) {

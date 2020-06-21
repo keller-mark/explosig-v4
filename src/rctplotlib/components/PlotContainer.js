@@ -54,6 +54,13 @@ export default function PlotContainer(props) {
         axisRight: left + marginLeft + plotWidth,
         axisBottom: left + marginLeft,
     };
+    const slotToSide = {
+        plot: undefined,
+        axisTop: "top",
+        axisLeft: "left",
+        axisRight: "right",
+        axisBottom: "bottom",
+    };
 
     return (
         <StyledPlotContainer
@@ -69,6 +76,7 @@ export default function PlotContainer(props) {
                     height: slotToHeight[child.props.slot],
                     top: slotToTop[child.props.slot],
                     left: slotToLeft[child.props.slot],
+                    side: slotToSide[child.props.slot],
                 }
             ))}
         </StyledPlotContainer>
