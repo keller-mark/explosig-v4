@@ -4,7 +4,7 @@ export const configSlice = createSlice({
     name: 'config',
     initialState: {
         catTypes: [],
-        projects: [],
+        sampleCohorts: [],
         catTypeToSignatures: {},
         geneMetricToGenes: {},
         clinicalVariables: [],
@@ -12,11 +12,11 @@ export const configSlice = createSlice({
     reducers: {
         setCatTypes: (state, action) => ({
             ...state,
-            catTypes: action.payload.catTypes,
+            catTypes: action.payload,
         }),
-        setProjects: (state, action) => ({
+        setSampleCohorts: (state, action) => ({
             ...state,
-            projects: action.payload.projects,
+            sampleCohorts: action.payload,
         }),
         setSignaturesByCatType: (state, action) => ({
             ...state,
@@ -34,7 +34,7 @@ export const configSlice = createSlice({
         }),
         setClinicalVariables: (state, action) => ({
             ...state,
-            clinicalVariables: action.payload.clinicalVariables,
+            clinicalVariables: action.payload,
         })
     }
 });

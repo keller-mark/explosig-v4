@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from "styled-components";
 import ConfigModal from './ConfigModal';
 
-
 const StyledNavBar = styled("div")`
     height: 49px;
     width: 100%;
@@ -17,10 +16,6 @@ const StyledNavButton = styled("button")`
     border: 0;
     padding: .3rem;
     border-radius: .2rem;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     cursor: pointer;
     margin: 0 .5rem;
     font-size: 16px;
@@ -42,8 +37,10 @@ const StyledRightButtonGroup = styled("div")`
     margin: 9px .5rem;
 `;
 
-export default function NavBar() {
+export default function NavBar(props) {
+    const {
 
+    } = props;
     const [isConfigOpen, setIsConfigOpen] = useState(false);
     return (
         <StyledNavBar>

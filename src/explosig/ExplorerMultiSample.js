@@ -4,7 +4,6 @@ import styled from "styled-components";
 import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
 import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale, Axis } from "../rctplotlib";
-import { MUT_TYPES, CAT_TYPES } from './utils/constants.js';
 import { useColumnSize } from './utils/hooks.js';
 import { datasetsSlice, scalesSlice } from './utils/slices.js';
 const { setDataset } = datasetsSlice.actions;
@@ -69,7 +68,7 @@ function ExplorerMultiSample(props) {
         <div ref={columnRef}>
            MultiSample
 
-           <button onClick={() => sampleIdScale.setDomain(sampleIdScale.domain.slice(0, 10))}>Update signature domain</button>
+           <button onClick={() => sampleIdScale.setDomainFiltered(sampleIdScale.domain.slice(0, 10))}>Update signature domain</button>
 
 
             <PlotContainer

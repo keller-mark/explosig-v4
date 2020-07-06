@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import styled from "styled-components";
-import { MUT_TYPES, CAT_TYPES } from './utils/constants';
 import Explorer from './Explorer';
 import NavBar from './NavBar';
 

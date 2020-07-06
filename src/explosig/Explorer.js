@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from "styled-components";
 import Split from 'react-split';
-import { MUT_TYPES, CAT_TYPES } from './utils/constants';
+import { MUT_TYPES, CAT_TYPES } from './utils/categories';
 import ExplorerMultiSample from './ExplorerMultiSample';
 
 const StyledExplorer = styled("div")`
