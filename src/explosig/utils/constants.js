@@ -1,5 +1,10 @@
 const dataListing = {
-    "cohorts": [
+    "sampleCohortSources": [
+      "TCGA",
+      "cBioPortal",
+      "ICGC"
+    ],
+    "sampleCohorts": [
       {
         "id": "TCGA-ACC_ACC_mc3.v0.2.8.WXS",
         "name": "Adrenal Gland Adenomas and Adenocarcinomas - WXS",

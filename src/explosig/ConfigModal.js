@@ -7,13 +7,26 @@ import PickMutTypes from './PickMutTypes';
 import PickSamples from './PickSamples';
 const { setCatTypes, setProjects, setSignaturesByCatType, setGenesByGeneMetric, setClinicalVariables } = configSlice.actions;
 
-const StyledConfigModalInner = styled.div`
-    text-align: center;
+
+const StyledConfigModal = styled.div`
+    display: grid;
+    grid-template-rows: 1fr auto;
+`;
+
+const StyledConfigModalTop = styled.div`
+    margin-left: 0.5rem;
     margin-top: 0.3rem;
+    display: inline;
+    h3 {
+        font-size: 18px;
+        display: inline;
+        padding: 0;
+        margin: 0;
+    }
 `;
 
 const StyledButtonRow = styled.div`
-
+    display: inline;
 `;
 
 const StyledButton = styled.button`
@@ -26,6 +39,10 @@ const StyledButton = styled.button`
     margin: .5rem .5rem;
     font-size: 14px;
     opacity: ${(props) => (props.active ? 1 : 0.4)};
+`;
+
+const StyledConfigModalInner = styled.div`
+    
 `;
 
 const PANEL = Object.freeze({
@@ -50,19 +67,22 @@ function ConfigModal(props) {
             open={true}
             onClose={onClose}
         >
-            <StyledConfigModalInner>
-                <span>Configure</span>
-                <StyledButtonRow>
-                    <StyledButton active={panel === PANEL.mutTypes} onClick={() => setPanel(PANEL.mutTypes)}>Mutation Types</StyledButton>
-                    <StyledButton active={panel === PANEL.samples} onClick={() => setPanel(PANEL.samples)}>Samples</StyledButton>
-                    <StyledButton active={panel === PANEL.signatures} onClick={() => setPanel(PANEL.signatures)}>Signatures</StyledButton>
-                    <StyledButton active={panel === PANEL.genes} onClick={() => setPanel(PANEL.genes)}>Genes</StyledButton>
-                    <StyledButton active={panel === PANEL.clinical} onClick={() => setPanel(PANEL.clinical)}>Clinical</StyledButton>
-                </StyledButtonRow>
-            </StyledConfigModalInner>
-
-            {panel === PANEL.mutTypes && (<PickMutTypes />)}
-            {panel === PANEL.samples && (<PickSamples />)}
+            <StyledConfigModal>
+                <StyledConfigModalTop>
+                    <h3>Configure</h3>
+                    <StyledButtonRow>
+                        <StyledButton active={panel === PANEL.mutTypes} onClick={() => setPanel(PANEL.mutTypes)}>Mutation Types</StyledButton>
+                        <StyledButton active={panel === PANEL.samples} onClick={() => setPanel(PANEL.samples)}>Sample Cohorts</StyledButton>
+                        <StyledButton active={panel === PANEL.signatures} onClick={() => setPanel(PANEL.signatures)}>Signatures</StyledButton>
+                        <StyledButton active={panel === PANEL.genes} onClick={() => setPanel(PANEL.genes)}>Genes</StyledButton>
+                        <StyledButton active={panel === PANEL.clinical} onClick={() => setPanel(PANEL.clinical)}>Clinical</StyledButton>
+                    </StyledButtonRow>
+                </StyledConfigModalTop>
+                <StyledConfigModalInner>
+                    {panel === PANEL.mutTypes && (<PickMutTypes />)}
+                    {panel === PANEL.samples && (<PickSamples />)}
+                </StyledConfigModalInner>
+            </StyledConfigModal>
         </Modal>
     );
 }

@@ -10,7 +10,7 @@ const StyledModalBackground = styled("div")`
     width: 100%;
     height: 100vh;
     background-color: black;
-    opacity: 0.4;
+    opacity: 0.7;
 `;
 
 const StyledModal = styled("div")`
@@ -23,9 +23,9 @@ const StyledModal = styled("div")`
     background-color: white;
 `;
 
-const StyledModalInner = styled("div")`
+const StyledModalInner = styled.div`
     box-sizing: border-box;
-    height: 100%;
+    height: 80vh;
     overflow-y: scroll;
     .modal-close {
         position: absolute;
