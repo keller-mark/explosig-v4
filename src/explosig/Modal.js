@@ -26,7 +26,6 @@ const StyledModal = styled("div")`
 const StyledModalInner = styled.div`
     box-sizing: border-box;
     height: 80vh;
-    overflow-y: scroll;
     .modal-close {
         position: absolute;
         right: 1.5rem;

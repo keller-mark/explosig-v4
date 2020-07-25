@@ -18,6 +18,7 @@ export const configSlice = createSlice({
             ...state,
             sampleCohorts: action.payload,
         }),
+        // TODO: Rename these setters to reflect the internal state variable names.
         setSignaturesByCatType: (state, action) => ({
             ...state,
             catTypeToSignatures: {

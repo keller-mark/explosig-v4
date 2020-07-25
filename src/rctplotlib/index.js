@@ -12,6 +12,7 @@ import DendrogramAxis from './components/axes/DendrogramAxis.vue';
 import Subplots from './components/Subplots';
 import PlotContainer from './components/PlotContainer';
 import StackedBarPlot from './components/plots/StackedBarPlot';
+import HeatmapPlot from './components/plots/HeatmapPlot';
 /*import BarPlot from './components/plots/BarPlot.vue';
 import ScatterPlot from './components/plots/ScatterPlot.vue';
 import BoxPlot from './components/plots/BoxPlot.vue';
@@ -118,6 +119,7 @@ export {
     Subplots,
     PlotContainer,
     StackedBarPlot,
+    HeatmapPlot,
     // Classes
     Dataset,
     HistoryStack,

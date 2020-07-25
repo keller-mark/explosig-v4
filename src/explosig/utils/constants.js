@@ -3470,6 +3470,15 @@ const dataListing = {
         "oncotreeTissueCode": "KIDNEY"
       }
     ],
+    "signatureSources": [
+      "COSMIC",
+      "Kim2016",
+      "PCAWG",
+      "Rahbari2016",
+      "Kucab2019",
+      "MUTAGENE-5",
+      "MUTAGENE-10"
+    ],
     "signatures": [
       {
         "id": "COSMIC 1",

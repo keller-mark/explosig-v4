@@ -5,6 +5,9 @@ import Modal from './Modal';
 import { configSlice } from './utils/slices.js';
 import PickMutTypes from './PickMutTypes';
 import PickSamples from './PickSamples';
+import PickSignatures from './PickSignatures';
+import PickGenes from './PickGenes';
+import PickClinical from './PickClinical';
 const { setCatTypes, setProjects, setSignaturesByCatType, setGenesByGeneMetric, setClinicalVariables } = configSlice.actions;
 
 
@@ -42,7 +45,7 @@ const StyledButton = styled.button`
 `;
 
 const StyledConfigModalInner = styled.div`
-    
+    display: ${props => (props.$visible ? 'normal' : 'none')}
 `;
 
 const PANEL = Object.freeze({
@@ -60,11 +63,20 @@ function ConfigModal(props) {
         onClose,
     } = props;
 
-    const [panel, setPanel] = useState(PANEL.samples);
+    const [panel, setPanel] = useState(PANEL.signatures);
+
+    // Scoped config values
+    const [catTypes, setCatTypes] = useState([]);
+    const [sampleCohorts, setSampleCohorts] = useState([]);
+    const [catTypeToSignatures, setCatTypeToSignatures] = useState({});
+    const [geneMetricToGenes, setGeneMetricToGenes] = useState({});
+    const [clinicalVariables, setClinicalVariables] = useState([]);
+
+    console.log(catTypes, sampleCohorts);
 
     return (
         <Modal
-            open={true}
+            open={open}
             onClose={onClose}
         >
             <StyledConfigModal>
@@ -78,9 +90,25 @@ function ConfigModal(props) {
                         <StyledButton active={panel === PANEL.clinical} onClick={() => setPanel(PANEL.clinical)}>Clinical</StyledButton>
                     </StyledButtonRow>
                 </StyledConfigModalTop>
-                <StyledConfigModalInner>
-                    {panel === PANEL.mutTypes && (<PickMutTypes />)}
-                    {panel === PANEL.samples && (<PickSamples />)}
+                <StyledConfigModalInner $visible={panel === PANEL.mutTypes}>
+                    <PickMutTypes
+                        catTypes={catTypes}
+                        setCatTypes={setCatTypes}
+                    />
+                </StyledConfigModalInner>
+                <StyledConfigModalInner $visible={panel === PANEL.samples}>
+                    <PickSamples
+                        sampleCohorts={sampleCohorts}
+                        setSampleCohorts={setSampleCohorts}
+                    />
+                </StyledConfigModalInner>
+                <StyledConfigModalInner $visible={panel === PANEL.signatures}>
+                    <PickSignatures
+                        catTypes={catTypes}
+                        sampleCohorts={sampleCohorts}
+                        catTypeToSignatures={catTypeToSignatures}
+                        setCatTypeToSignatures={setCatTypeToSignatures}
+                    />
                 </StyledConfigModalInner>
             </StyledConfigModal>
         </Modal>

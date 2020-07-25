@@ -55,7 +55,7 @@ function Axis(props) {
     const variableScale = (orientation === ORIENTATIONS.horizontal ? xScale : yScale);
 
     const computedTranslateX = (orientation === ORIENTATIONS.horizontal ? 0 : width - 1);
-    const computedTranslateY = 0;
+    const computedTranslateY = (side === SIDES.top ? height - 1 : 0);
 
     useEffect(() => {
         if(variableScale) {
@@ -664,8 +664,8 @@ function Axis(props) {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    xScale: state.scales[ownProps.x],
-    yScale: state.scales[ownProps.y],
+    xScale: ownProps.xScale || state.scales[ownProps.x],
+    yScale: ownProps.yScale || state.scales[ownProps.y],
 });
 
 export default connect(mapStateToProps, null)(Axis);

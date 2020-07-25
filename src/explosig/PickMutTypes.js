@@ -4,7 +4,6 @@ import fromEntries from 'object.fromentries';
 import styled from "styled-components";
 import { MUT_TYPE_TO_CAT_TYPES, MUT_TYPES, CAT_TYPES, CAT_TYPE_INFO, getCategoryColors, getSuperCategoryDetails } from './utils/categories';
 import { configSlice } from './utils/slices.js';
-const { setCatTypes } = configSlice.actions;
 
 const StyledInnerModal = styled.div`
     padding: 0 0.5rem;
@@ -12,12 +11,12 @@ const StyledInnerModal = styled.div`
 
 function PickMutTypes(props) {
     const {
-        catTypes,
-        setCatTypes,
+        catTypes: selectedCatTypes,
+        setCatTypes: setSelectedCatTypes,
     } = props;
 
     function onCheckCatType(event) {
-        const mutTypeToCatType = fromEntries(catTypes.map(catType => ([
+        const mutTypeToCatType = fromEntries(selectedCatTypes.map(catType => ([
             CAT_TYPE_INFO[catType].mutType,
             catType
         ])));
@@ -32,7 +31,7 @@ function PickMutTypes(props) {
                 mutTypeToCatType[mutType] = undefined;
             }
             const newCatTypes = Object.values(mutTypeToCatType).filter(Boolean);
-            setCatTypes(newCatTypes);
+            setSelectedCatTypes(newCatTypes);
         }
     }
 
@@ -50,7 +49,7 @@ function PickMutTypes(props) {
                                         type="checkbox"
                                         id={catType}
                                         value={catType}
-                                        checked={catTypes.includes(catType)}
+                                        checked={selectedCatTypes.includes(catType)}
                                         onChange={onCheckCatType}
                                     />
                                     <label htmlFor={catType}>{catType}</label>
@@ -64,12 +63,4 @@ function PickMutTypes(props) {
     );
 }
 
-const mapStateToProps = (state) => ({
-    catTypes: state.config.catTypes,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    setCatTypes: catTypes => dispatch(setCatTypes(catTypes)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PickMutTypes);
+export default PickMutTypes;
