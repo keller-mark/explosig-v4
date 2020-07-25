@@ -1,4 +1,6 @@
-# explosig-react
+# explosig
+
+WIP: rewriting [ExploSig](https://github.com/lrgr/explosig)
 
 ### Development
 
