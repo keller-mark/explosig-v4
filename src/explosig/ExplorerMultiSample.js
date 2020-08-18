@@ -4,7 +4,7 @@ import styled from "styled-components";
 import fromEntries from "object.fromentries";
 import { readTsv, selectRows, signatureEstimationQP } from "../signature-utils";
 import { Dataset, Subplots, PlotContainer, CategoricalScale, StackedBarPlot, ContinuousScale, Axis } from "../rctplotlib";
-import { useColumnSize } from './utils/hooks.js';
+import { useElementSize } from './utils/hooks.js';
 import { datasetsSlice, scalesSlice } from './utils/slices.js';
 const { setDataset } = datasetsSlice.actions;
 const { setScale } = scalesSlice.actions;
@@ -55,7 +55,7 @@ function ExplorerMultiSample(props) {
         setScale,
     } = props;
 
-    const [columnWidth, columnHeight, columnRef] = useColumnSize();
+    const [columnWidth, columnHeight, columnRef] = useElementSize();
 
     useEffect(() => {
         setDataset({ id: "exposures.SBS-96", dataset: exposuresDataset });

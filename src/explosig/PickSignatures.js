@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import fromEntries from 'object.fromentries';
 import styled from "styled-components";
 import { dataListingPromise } from './utils/constants'; // TODO: temporary
+import { useElementSize } from './utils/hooks.js';
 import { configSlice } from './utils/slices.js';
 import { Dataset, PlotContainer, CategoricalScale, HeatmapPlot, ContinuousScale, Axis } from "../rctplotlib";
 
-
+const DEFAULT_CAT_TYPE = '*';
 const DEFAULT_SOURCE = 'COSMIC';
 
 const StyledContainer = styled.div`
@@ -27,7 +28,7 @@ const StyledOptions = styled.div`
 `;
 
 const StyledSignatureMatrix = styled.div`
-
+    overflow: scroll;
 `;
 
 function filterSignatures(signatures, sourceFilter) {
@@ -46,12 +47,17 @@ function PickSignatures(props) {
     const [catTypeToSignatures, setCatTypeToSignatures] = useState({});
     const [signatureSources, setSignatureSources] = useState([]);
     const [signatures, setSignatures] = useState([]);
+    const [catTypeFilter, setCatTypeFilter] = useState(DEFAULT_CAT_TYPE);
     const [sourceFilter, setSourceFilter] = useState(DEFAULT_SOURCE);
+    const [cancerTypeMap, setCancerTypeMap] = useState([]);
+
+    const [width, height, elRef] = useElementSize();
 
     useEffect(() => {
         dataListingPromise.then((dataListing) => {
             setSignatures(dataListing.signatures);
             setSignatureSources(dataListing.signatureSources);
+            setCancerTypeMap(dataListing.cancerTypeMap);
         });
     });
 
@@ -59,29 +65,38 @@ function PickSignatures(props) {
         setSourceFilter(event.target.value);
     }
 
+
+    const filteredSignatureNames = signatures
+        .filter(s => (sourceFilter === '*' ? true : s.source === sourceFilter))
+        .map(s => s.id);
+    
+    const filteredCancerTypeNames = Array.from(new Set(cancerTypeMap
+        .filter(ct => (sourceFilter === '*' ? true : ct.source === sourceFilter))
+        .map(ct => ct.cancerType)));
+    
+    const filteredData = cancerTypeMap
+        .filter(ct => (sourceFilter === '*' ? true : ct.source === sourceFilter))
+        .map(ct => ({ signature: ct.signature, cancerType: ct.cancerType, active: 1 }));
+
     const xScale = new CategoricalScale({
         id: "cancerType",
         name: "Cancer Type",
-        domain: ["ALL", "AML", "LUSC"]
+        domain: filteredCancerTypeNames
     });
     const yScale = new CategoricalScale({
         id: "signature",
         name: "Signature",
-        domain: ["COSMIC 1", "COSMIC 2", "COSMIC 3"]
+        domain: filteredSignatureNames
     });
     const colorScale = new CategoricalScale({
         id: "active",
         name: "Active",
-        domain: ["True", "False"]
+        domain: [1, 0]
     });
     const dataDataset = new Dataset({
         id: "signaturesByCancerType",
         name: "Signatures by Cancer Type",
-        data: [{
-            "signature": "COSMIC 1",
-            "cancerType": "ALL",
-            "active": "True",
-        }]
+        data: filteredData
     })
 
     return (
@@ -97,19 +112,19 @@ function PickSignatures(props) {
 
                 </label>
             </StyledOptions>
-            <StyledSignatureMatrix>
+            <StyledSignatureMatrix ref={elRef}>
                 <PlotContainer
-                    width={500}
-                    height={500}
+                    width={width - 50}
+                    height={filteredSignatureNames.length * 16}
                     marginLeft={160}
-                    marginTop={80}
+                    marginTop={150}
                 >
                     <Axis
                         id="cancerType"
                         slot="axisTop"
                         x="cancerType"
                         xScale={xScale}
-                        tickRotation={-90}
+                        tickRotation={45}
                         maxCharacters={20}
                         enableBrushing={false}
                     />
@@ -131,6 +146,8 @@ function PickSignatures(props) {
                         yScale={yScale}
                         color="active"
                         colorScale={colorScale}
+                        rectMarginX={2}
+                        rectMarginY={2}
                     />
                 </PlotContainer>
             </StyledSignatureMatrix>

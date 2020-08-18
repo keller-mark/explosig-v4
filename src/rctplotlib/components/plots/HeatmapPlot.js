@@ -6,6 +6,7 @@ import Two from "../../two.js";
 import d3 from "../../../d3.js";
 
 import { TOOLTIP_DEBOUNCE, BAR_WIDTH_MIN, BAR_MARGIN_DEFAULT } from './../../constants.js';
+import { createNextColor } from './../../helpers.js';
 
 import AbstractScale from './../../scales/AbstractScale.js';
 import CategoricalScale from './../../scales/CategoricalScale.js';
@@ -31,6 +32,8 @@ function HeatmapPlot(props) {
         // Options
         shouldFilterX = true,
         shouldFilterY = true,
+        rectMarginX = 0,
+        rectMarginY = 0,
         onClick = null,
         onHover = null,
     } = props;
@@ -190,12 +193,24 @@ function HeatmapPlot(props) {
         const barWidth = width / xScaleDomain.length;
         const barHeight = height / yScaleDomain.length;
 
+        // Set up the hidden color mapping.
+        const colToNode = {};
+        const nextColor = createNextColor();
+
         // Draw bars.
         dataCopy.forEach((d) => {
             const col = colorScale.color(d[color]);
-            const rect = two.makeRect(xD3(d[x]), yD3(d[y]), barWidth, barHeight);
+            const rect = two.makeRect(xD3(d[x]) + rectMarginX/2, yD3(d[y]) + rectMarginY/2, barWidth - rectMarginX, barHeight - rectMarginY);
             rect.fill = col;
             rect.stroke = null;
+
+            // Draw hidden elements.
+            if(hiddenContext) {
+                const hiddenCol = nextColor();
+                colToNode[hiddenCol] = { "x": d[x], "y": d[y], "color": d[color] };
+                hiddenContext.fillStyle = hiddenCol;
+                hiddenContext.fillRect(xD3(d[x]), yD3(d[y]), barWidth, barHeight);
+            }
         });
 
         two.update();
@@ -210,23 +225,21 @@ function HeatmapPlot(props) {
          */
         const canvasSelection = d3.select(canvas);
 
-        const destroyTooltipDebounced = debounce(destroyTooltip, TOOLTIP_DEBOUNCE);
         canvasSelection.on("mousemove", () => {
             const mouse = d3.mouse(canvas);
             const mouseX = mouse[0];
             const mouseY = mouse[1];
 
-            // TODO
-            let xVal, yVal, colorVal;
-            let found = false;
+            const hiddenColor = two.getHiddenColor(mouseX, mouseY)
+            const node = colToNode[hiddenColor];
 
             const mouseViewportX = d3.event.clientX;
             const mouseViewportY = d3.event.clientY;
 
-            if(found) {
-                showTooltip(mouseViewportX, mouseViewportY, xVal, yVal, colorVal); 
+            if(node) {
+                showTooltip(mouseViewportX, mouseViewportY, node["x"], node["y"], node["color"]); 
             } else {
-                destroyTooltipDebounced();
+                destroyTooltip();
             }
         })
         .on("mouseleave", destroyTooltip);
@@ -237,12 +250,11 @@ function HeatmapPlot(props) {
                 const mouseX = mouse[0];
                 const mouseY = mouse[1];
 
-                // TODO
-                let xVal, yVal, colorVal;
-                let found = false;
+                const hiddenColor = two.getHiddenColor(mouseX, mouseY)
+                const node = colToNode[hiddenColor];
 
-                if(found) {
-                    onClick(xVal, yVal, colorVal); 
+                if(node) {
+                    onClick(node["x"], node["y"], node["color"]); 
                 }
             })
         }

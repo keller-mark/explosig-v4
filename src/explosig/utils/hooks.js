@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
  * @returns {array} `[width, height, containerRef]` where width and height
  * are numbers and containerRef is a React ref.
  */
-export function useColumnSize() {
+export function useElementSize() {
     const containerRef = useRef();
   
     const [height, setHeight] = useState();
@@ -28,4 +28,4 @@ export function useColumnSize() {
     }, []);
   
     return [width, height, containerRef];
-  }
+}

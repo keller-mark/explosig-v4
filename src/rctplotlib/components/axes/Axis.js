@@ -36,6 +36,7 @@ function Axis(props) {
         drawRegister,
         // Options
         tickRotation = 0,
+        enableOverflow = true,
         enableBrushing = true,
         showLabel = true,
         autoRemoveTicks = true,
@@ -161,6 +162,7 @@ function Axis(props) {
          */
 
         const container = d3.select(svg);
+        container.style("overflow", "visible");
         container.selectAll("g").remove();
         
         const containerZoomedIn = container.append("g")
@@ -233,7 +235,7 @@ function Axis(props) {
 
         let tickTextAnchor = "middle";
         if(tickRotation !== 0) {
-            if(side === SIDES.left || side === SIDES.bottom) {
+            if(side === SIDES.left || side === SIDES.bottom || side === SIDES.top) {
                 tickTextAnchor = "end";
             } else {
                 tickTextAnchor = "start";
