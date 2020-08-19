@@ -59,7 +59,7 @@ export default class AbstractScaleDispatcher {
      * Emit the highlight destroy event.
      */
     emitHighlightDestroy() {
-        this._dispatch.call(DISPATCH_EVENT_HIGHLIGHT_DESTROY);
+        this._dispatch.call(DISPATCH_EVENT_HIGHLIGHT_DESTROY, null, null);
     }
 
     /**

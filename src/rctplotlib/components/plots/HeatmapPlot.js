@@ -11,6 +11,7 @@ import { createNextColor } from './../../helpers.js';
 import AbstractScale from './../../scales/AbstractScale.js';
 import CategoricalScale from './../../scales/CategoricalScale.js';
 import Dataset from './../../datasets/Dataset.js';
+import Highlight from "../Highlight.js";
 
 
 function HeatmapPlot(props) {
@@ -36,14 +37,18 @@ function HeatmapPlot(props) {
         rectMarginY = 0,
         onClick = null,
         onHover = null,
+        enableTooltip = true,
     } = props;
 
     const [iteration, iterate] = useReducer(i => i+1, 0);
     const [highlightX, setHighlightX] = useState();
     const [highlightY, setHighlightY] = useState();
 
-    const [highlightScaleX, setHighlightScaleX] = useState();
-    const [highlightScaleY, setHighlightScaleY] = useState();
+    const [highlightWidth, setHighlightWidth] = useState();
+    const [highlightHeight, setHighlightHeight] = useState();
+
+    const highlightScaleX = useRef();
+    const highlightScaleY = useRef();
 
     const [tooltip, setTooltip] = useState();
 
@@ -62,14 +67,16 @@ function HeatmapPlot(props) {
         yScale.emitHighlight(tY);
         colorScale.emitHighlight(tColor);
 
-        setTooltip({
-            left: mouseX,
-            top: mouseY,
-            [xScale.name]: xScale.toHuman(tX),
-            [yScale.name]: yScale.toHuman(tY),
-            [colorScale.name]: colorScale.toHuman(tColor),
-        });
-    }, [xScale, yScale, colorScale]);
+        if(enableTooltip) {
+            setTooltip({
+                left: mouseX,
+                top: mouseY,
+                [xScale.name]: xScale.toHuman(tX),
+                [yScale.name]: yScale.toHuman(tY),
+                [colorScale.name]: colorScale.toHuman(tColor),
+            });
+        }
+    }, [xScale, yScale, colorScale, enableTooltip]);
 
     useEffect(() => {
         if(xScale && yScale && colorScale && dataDataset) {
@@ -88,9 +95,9 @@ function HeatmapPlot(props) {
 
             // Subscribe to highlights here
             xScale.onHighlight(id, setHighlightX);
-            xScale.onHighlightDestroy(id, () => setHighlightX(null));
+            xScale.onHighlightDestroy(id, setHighlightX);
             yScale.onHighlight(id, setHighlightY);
-            yScale.onHighlightDestroy(id, () => setHighlightY(null));
+            yScale.onHighlightDestroy(id, setHighlightY);
         }
 
         return () => {
@@ -183,15 +190,18 @@ function HeatmapPlot(props) {
         const xD3 = d3.scaleBand()
             .domain(xScaleDomain)
             .range([0, width]);
-        setHighlightScaleX(xD3);
+        highlightScaleX.current = xD3;
 
         const yD3 = d3.scaleBand()
             .domain(yScaleDomain)
             .range([0, height]);
-        setHighlightScaleY(yD3);
+        highlightScaleY.current = yD3;
 
         const barWidth = width / xScaleDomain.length;
         const barHeight = height / yScaleDomain.length;
+
+        setHighlightWidth(barWidth);
+        setHighlightHeight(barHeight);
 
         // Set up the hidden color mapping.
         const colToNode = {};
@@ -241,6 +251,14 @@ function HeatmapPlot(props) {
             } else {
                 destroyTooltip();
             }
+
+            if(onHover) {
+                if(node) {
+                    onHover({ mouseX: mouseViewportX, mouseY: mouseViewportY, x: node["x"], y: node["y"], color: node["color"] });
+                } else {
+                    onHover(null);
+                }
+            }
         })
         .on("mouseleave", destroyTooltip);
         
@@ -260,10 +278,7 @@ function HeatmapPlot(props) {
         }
 
     }, [width, height, xScale, yScale, colorScale, dataDataset, id]);
-
-
-    console.log("HeatmapPlot.render", iteration);
-    
+        
     return (
         <Plot
             height={height}
@@ -273,6 +288,12 @@ function HeatmapPlot(props) {
             draw={draw}
             iteration={iteration}
             tooltip={tooltip}
+            highlightScaleX={highlightScaleX.current}
+            highlightScaleY={highlightScaleY.current}
+            highlightX={highlightX}
+            highlightY={highlightY}
+            highlightWidth={highlightWidth}
+            highlightHeight={highlightHeight}
         />
     );
 }

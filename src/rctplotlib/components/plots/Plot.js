@@ -41,6 +41,32 @@ const StyledTooltip = styled.div.attrs(props => ({
     }
 `;
 
+const StyledHighlightX = styled.div.attrs(props => ({
+    style: {
+        left: `${props.$x - 0.5}px`,
+    }
+}))`
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background-color: black;
+    pointer-events: none;
+`;
+
+const StyledHighlightY = styled.div.attrs(props => ({
+    style: {
+        top: `${props.$y - 0.5}px`,
+    }
+}))`
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    pointer-events: none;
+`;
+
 export default function Plot(props) {
     const {
         draw,
@@ -49,11 +75,13 @@ export default function Plot(props) {
         width,
         top,
         left,
-        highlightX1,
-        highlightX2,
-        highlightY1,
-        highlightY2,
         tooltip,
+        highlightScaleX = null,
+        highlightScaleY = null,
+        highlightX = null,
+        highlightY = null,
+        highlightHeight = null,
+        highlightWidth = null,
     } = props;
 
     const canvasRef = useRef();
@@ -62,6 +90,9 @@ export default function Plot(props) {
     useEffect(() => {
         draw(canvasRef.current, hiddenCanvasRef.current);
     }, [draw, iteration]);
+
+    const x = highlightScaleX && highlightX ? highlightScaleX(highlightX) : null;
+    const y = highlightScaleY && highlightY ? highlightScaleY(highlightY) : null;
     
     return (
         <StyledPlot
@@ -70,30 +101,23 @@ export default function Plot(props) {
             top={top}
             left={left}
         >
+            {/* plot */}
             <canvas ref={canvasRef} />
             <canvas ref={hiddenCanvasRef} />
-            {highlightX1 && (
-                <div
-                    style={{
-                        'height': (height) + 'px', 
-                        'width': '1px',
-                        'top': (top) + 'px',
-                        'left': (left + highlightX1 - 0.5) + 'px'
-                    }}
-                    className="vdp-plot-highlight"
-                />
-            )}
-            {highlightX2 && (
-                <div
-                    style={{
-                        'height': (height) + 'px', 
-                        'width': '1px',
-                        'top': (top) + 'px',
-                        'left': (left + highlightX2 - 0.5) + 'px'
-                    }}
-                    className="vdp-plot-highlight"
-                />
-            )}
+            {/* highlight */}
+            {x !== null ? (
+                <StyledHighlightX $x={x} />
+            ) : null}
+            {x !== null && highlightWidth !== null ? (
+                <StyledHighlightX $x={x + highlightWidth} />
+            ) : null}
+            {y !== null ? (
+                <StyledHighlightY $y={y} />
+            ) : null}
+            {y !== null && highlightHeight !== null ? (
+                <StyledHighlightY $y={y + highlightHeight} />
+            ) : null}
+            {/* tooltip */}
             {tooltip && (
                 <StyledTooltip
                     top={tooltip.top}

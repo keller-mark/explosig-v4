@@ -85,7 +85,7 @@ export default class CategoricalScale extends AbstractScale {
         if(AbstractScale.isUnknown(domainValue)) {
             return AbstractScale.unknownColor;
         }
-        if(Object.keys(this._colorOverrides).includes(domainValue)) {
+        if(this._colorOverrides[domainValue]) {
             return this._colorOverrides[domainValue];
         }
         return this.colorScale(this.domain.findIndex((el) => (el === domainValue)) / parseFloat(this.domain.length - 1));

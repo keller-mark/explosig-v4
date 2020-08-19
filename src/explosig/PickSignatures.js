@@ -29,6 +29,7 @@ const StyledOptions = styled.div`
 
 const StyledSignatureMatrix = styled.div`
     overflow: scroll;
+    cursor: pointer;
 `;
 
 function filterSignatures(signatures, sourceFilter) {
@@ -91,7 +92,8 @@ function PickSignatures(props) {
     const colorScale = new CategoricalScale({
         id: "active",
         name: "Active",
-        domain: [1, 0]
+        domain: [1, 0],
+        colorOverrides: { 1: "gray" }
     });
     const dataDataset = new Dataset({
         id: "signaturesByCancerType",
@@ -99,6 +101,7 @@ function PickSignatures(props) {
         data: filteredData
     })
 
+    console.log(colorScale)
     return (
         <StyledContainer>
             <StyledOptions>
@@ -114,7 +117,7 @@ function PickSignatures(props) {
             </StyledOptions>
             <StyledSignatureMatrix ref={elRef}>
                 <PlotContainer
-                    width={width - 50}
+                    width={(width || 50) - 50}
                     height={filteredSignatureNames.length * 16}
                     marginLeft={160}
                     marginTop={150}
@@ -148,6 +151,8 @@ function PickSignatures(props) {
                         colorScale={colorScale}
                         rectMarginX={2}
                         rectMarginY={2}
+                        enableTooltip={false}
+                        onHover={() => {}}
                     />
                 </PlotContainer>
             </StyledSignatureMatrix>

@@ -76,7 +76,7 @@ const baseConfig = {
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
         html({
-            title: pkg.name,
+            title: 'ExploSig v4',
             publicPath: '/',
             fileName: OUTPUT_HTML,
             template: ({ publicPath, title }) => {
