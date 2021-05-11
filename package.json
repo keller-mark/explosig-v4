@@ -17,7 +17,7 @@
     "d3-dispatch-nosplit": "^2.0.1",
     "d3-drag": "^1.2.5",
     "json2csv": "^5.0.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "object.fromentries": "^2.0.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
